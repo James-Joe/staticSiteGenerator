@@ -1,7 +1,7 @@
 class TextNode:
     def __init__(self, text, text_type, url=None) -> None:
         self.text = text
-        self.text_type = text_type
+        self.text_type = text_type.lower()
         self.url = url
 
     def __eq__(self, other_node):
