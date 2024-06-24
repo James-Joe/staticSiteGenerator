@@ -21,17 +21,15 @@ class HTMLNode:
    
 class LeafNode(HTMLNode):
     def __init__(self, tag: str = None, value: str = None, props: dict = None) -> None:
-        super().__init__(tag, value, props)
+        super().__init__(tag, value, None, props)
         
     def to_html(self) -> str:
         if self.value is None:
             raise ValueError
         if self.tag is None: return f"{self.value}"
         if self.props is None: return f"<{self.tag}>{self.value}</{self.tag}>"
-        else: return f"<{self.props_to_html()}>"
-        # if self.props is not None: return f"<{self.tag} {self.props_to_html()}>{self.value}</{self.tag}>"
+        return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
     
 
-        
-# <p>This is a paragraph of text.</p>
-# <a href="https://www.google.com">Click me!</a>
+node3 = LeafNode(tag="a", value="Click me!", props={"href": "https://www.google.com"}) 
+
