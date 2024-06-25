@@ -42,9 +42,31 @@ class TestHtmlNode(unittest.TestCase):
         ]
         )
         expected_nested_html = "<div><p><b>Bold text</b><i>italic text</i></p>Normal text</div>"
+
+        double_nested_parent = ParentNode(
+        "div",
+        [
+            ParentNode(
+                "p",
+                [
+                    LeafNode("b", "Bold text"),
+                    LeafNode("i", "italic text"),
+                    ParentNode(
+                        "p",
+                        [
+                            LeafNode("b", "Bold text")
+                        ]
+                    )
+                ]
+            ),
+            LeafNode(None, "Normal text"),
+        ]
+        )
+        expected_double_nested_html = "<div><p><b>Bold text</b><i>italic text</i><p><b>Bold text</b></p></p>Normal text</div>"
         
         self.assertEqual(node1.to_html(), "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>")
         self.assertEqual(nested_parent.to_html(), expected_nested_html)
+        self.assertEqual(double_nested_parent.to_html(), expected_double_nested_html)
 
    
         
