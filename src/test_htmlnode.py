@@ -1,6 +1,7 @@
 import unittest
 
 from htmlnode import HTMLNode, LeafNode, ParentNode #type:ignore
+from textnode import TextNode
 
 
 class TestHtmlNode(unittest.TestCase):
@@ -67,6 +68,9 @@ class TestHtmlNode(unittest.TestCase):
         self.assertEqual(node1.to_html(), "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>")
         self.assertEqual(nested_parent.to_html(), expected_nested_html)
         self.assertEqual(double_nested_parent.to_html(), expected_double_nested_html)
+        
+
+
 
    
         
