@@ -13,7 +13,7 @@ class TextNode:
         self.text_type = text_type.lower()
         self.url = url
 
-    def __eq__(self, other_node):
+    def __eq__(self, other_node) -> bool:
         if self.text == other_node.text and self.text_type == other_node.text_type and self.url == other_node.url: 
             return True
         return False
@@ -37,4 +37,6 @@ def text_node_to_html_node(text_node: TextNode) -> LeafNode:
         return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
     raise ValueError(f"{text_node.text_type} is not a valid text type")    
 
+def split_nodes_delimiter(old_nodes: list, delimiter: str, text_type: str) -> list:
+    new_nodes = []
     
