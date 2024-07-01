@@ -39,4 +39,42 @@ def text_node_to_html_node(text_node: TextNode) -> LeafNode:
 
 def split_nodes_delimiter(old_nodes: list, delimiter: str, text_type: str) -> list:
     new_nodes = []
-    
+    if text_type == text_type_text: 
+        new_nodes.extend(old_nodes)
+    for i in old_nodes:
+        if i.text_type != text_type_text: 
+            new_nodes.append(i)
+        delimiter_num = i.text.count(delimiter)
+        print(delimiter_num)
+        if delimiter_num % 2 > 0:
+            raise Exception("Odd number of delimiters")
+        in_delimiter = False
+        string = ""
+        for char in i.text:
+            if char != delimiter:
+                string += char
+            elif char == delimiter and in_delimiter is False:
+                in_delimiter = True
+                new_nodes.append(TextNode(string, text_type_text))
+                string = ""
+                continue
+            elif char == delimiter and in_delimiter is True:
+                in_delimiter = False
+                new_nodes.append(TextNode(string, text_type))
+                string = ""
+                continue
+        if in_delimiter is False:
+            new_nodes.append(TextNode(string, text_type_text))
+        if in_delimiter is True:
+            new_nodes.append(TextNode(string, text_type))
+    for i in new_nodes:
+        if i.text == "" or i.text == " ":
+            new_nodes.remove(i)
+    return new_nodes
+
+
+node = TextNode("`This is` text with a `code` `block` word", text_type_text)
+new_nodes = split_nodes_delimiter([node], "`", text_type_code)
+
+for i in new_nodes:
+    print(i)
