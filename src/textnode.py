@@ -37,44 +37,24 @@ def text_node_to_html_node(text_node: TextNode) -> LeafNode:
         return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
     raise ValueError(f"{text_node.text_type} is not a valid text type")    
 
-def split_nodes_delimiter(old_nodes: list, delimiter: str, text_type: str) -> list:
+def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
-    if text_type == text_type_text: 
-        new_nodes.extend(old_nodes)
-    for i in old_nodes:
-        if i.text_type != text_type_text: 
-            new_nodes.append(i)
-        delimiter_num = i.text.count(delimiter)
-        print(delimiter_num)
-        if delimiter_num % 2 > 0:
-            raise Exception("Odd number of delimiters")
-        in_delimiter = False
-        string = ""
-        for char in i.text:
-            if char != delimiter:
-                string += char
-            elif char == delimiter and in_delimiter is False:
-                in_delimiter = True
-                new_nodes.append(TextNode(string, text_type_text))
-                string = ""
+    for old_node in old_nodes:
+        if old_node.text_type != text_type_text:
+            new_nodes.append(old_node)
+            continue
+        split_nodes = []
+        sections = old_node.text.split(delimiter)
+        if len(sections) % 2 == 0:
+            raise ValueError("Invalid markdown, formatted section not closed")
+        for i in range(len(sections)):
+            if sections[i] == "":
                 continue
-            elif char == delimiter and in_delimiter is True:
-                in_delimiter = False
-                new_nodes.append(TextNode(string, text_type))
-                string = ""
-                continue
-        if in_delimiter is False:
-            new_nodes.append(TextNode(string, text_type_text))
-        if in_delimiter is True:
-            new_nodes.append(TextNode(string, text_type))
-    for i in new_nodes:
-        if i.text == "" or i.text == " ":
-            new_nodes.remove(i)
+            if i % 2 == 0:
+                split_nodes.append(TextNode(sections[i], text_type_text))
+            else:
+                split_nodes.append(TextNode(sections[i], text_type))
+        new_nodes.extend(split_nodes)
     return new_nodes
 
 
-node = TextNode("`This is` text with a `code` `block` word", text_type_text)
-new_nodes = split_nodes_delimiter([node], "`", text_type_code)
-
-for i in new_nodes:
-    print(i)
