@@ -1,5 +1,5 @@
 import unittest
-from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
+from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link
 from textnode import TextNode
 
 text_type_text = "text"
@@ -28,6 +28,17 @@ class TestMarkdownModules(unittest.TestCase):
     def test_extract_markdown_links(self):
         text = "This is text with a [link](https://www.example.com) and [another](https://www.example.com/another)"
         self.assertEqual(extract_markdown_links(text), [("link", "https://www.example.com"), ("another", "https://www.example.com/another")])
-               
+        
+    def test_split_nodes_link(self):
+        node = TextNode(
+            "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
+            text_type_text
+        )
+        self.assertEqual(split_nodes_link([node]), [TextNode("This is text with a link ", "text", None), TextNode("to boot dev", "link", "https://www.boot.dev"), TextNode(" and ", "text", None), TextNode("to youtube", "link", "https://www.youtube.com/@bootdotdev")])
+
+    def test_split_nodes_image(self):
+        node = TextNode("This is text with an ![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and ![another](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/dfsdkjfd.png) too ", text_type_text)
+        self.assertEqual(split_nodes_image([node]), [TextNode("This is text with an ", "text", None), TextNode("image", "image", "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"), TextNode(" and ", "text", None), TextNode("another", "image", "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/dfsdkjfd.png"), TextNode(" too ", "text", None)])
+             
 if __name__ == "__main__":
     unittest.main()
